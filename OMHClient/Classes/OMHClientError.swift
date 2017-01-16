@@ -21,6 +21,10 @@ public enum OMHClientError: Error {
     //invalid refresh token: refreshAccessToken
     case invalidRefreshToken
     
+    //we've already uploaded a datapoint with this id
+    //server returns a 409
+    case dataPointConflict
+    
     //invalid response for signIn / refreshAccessToken 
     //e.g., expected field missing in json
     case malformedResponse(responseBody: Any)

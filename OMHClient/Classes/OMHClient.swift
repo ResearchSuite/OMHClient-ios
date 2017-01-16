@@ -147,10 +147,16 @@ open class OMHClient: NSObject {
             }
             
             //all errors from here down!
+            if let response = jsonResponse.response,
+                response.statusCode == 409 {
+                debugPrint(jsonResponse)
+                completion(false, OMHClientError.dataPointConflict)
+                return
+            }
             
             //check for lower level errors
             if let error = jsonResponse.result.error {
-                debugPrint(error)
+                debugPrint(jsonResponse)
                 completion(false, error)
                 return
             }

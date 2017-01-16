@@ -78,8 +78,16 @@ class ViewController: UIViewController {
                 
                 ohmageClient.postSample(sampleDict: image.toDict(), mediaAttachments: image.attachments, token: signInResponse.accessToken, completion: { (success, error) in
                     
-//                    debugPrint(error)
-//                    debugPrint(success)
+                    debugPrint(error)
+                    debugPrint(success)
+                    
+                    
+                })
+                
+                ohmageClient.postSample(sampleDict: image.toDict(), mediaAttachments: image.attachments, token: signInResponse.accessToken, completion: { (success, error) in
+                    
+                                        debugPrint(error)
+                                        debugPrint(success)
                     
                     
                 })
