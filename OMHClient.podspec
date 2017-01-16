@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
 'OMHClient is an simple, immutable OHM API Client.'
+**This project is currently experimental and will be changing rapidly. You probably shouldn't use it yet!**
                        DESC
 
   s.homepage         = 'https://github.com/cornelltech/OMHClient-ios'
