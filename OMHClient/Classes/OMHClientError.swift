@@ -25,6 +25,9 @@ public enum OMHClientError: Error {
     //server returns a 409
     case dataPointConflict
     
+    //server returns a 502
+    case badGatewayError
+    
     //invalid response for signIn / refreshAccessToken 
     //e.g., expected field missing in json
     case malformedResponse(responseBody: Any)

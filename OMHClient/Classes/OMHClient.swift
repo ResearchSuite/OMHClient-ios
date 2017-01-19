@@ -75,6 +75,13 @@ open class OMHClient: NSObject {
                 return
             }
             
+            if let response = jsonResponse.response,
+                response.statusCode == 502 {
+                debugPrint(jsonResponse)
+                completion(nil, OMHClientError.badGatewayError)
+                return
+            }
+            
             if response.statusCode != 200 {
                 
                 guard jsonResponse.result.isSuccess,
@@ -153,6 +160,14 @@ open class OMHClient: NSObject {
                 completion(false, OMHClientError.dataPointConflict)
                 return
             }
+            
+            if let response = jsonResponse.response,
+                response.statusCode == 502 {
+                debugPrint(jsonResponse)
+                completion(false, OMHClientError.badGatewayError)
+                return
+            }
+            
             
             //check for lower level errors
             if let error = jsonResponse.result.error {
@@ -282,6 +297,13 @@ open class OMHClient: NSObject {
             //credentialsFailure
             guard let response = jsonResponse.response else {
                 completion(nil, OMHClientError.malformedResponse(responseBody: jsonResponse))
+                return
+            }
+            
+            if let response = jsonResponse.response,
+                response.statusCode == 502 {
+                debugPrint(jsonResponse)
+                completion(nil, OMHClientError.badGatewayError)
                 return
             }
             
