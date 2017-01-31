@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'OMHClient'
-  s.version          = '0.0.3'
+  s.version          = '0.0.4'
   s.summary          = 'OMHClient is an simple, immutable OHM API Client.'
 
 # This description is used to generate tags and improve search results.

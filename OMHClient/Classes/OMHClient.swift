@@ -124,6 +124,13 @@ open class OMHClient: NSObject {
         return self.postSample(sampleDict: sample.toDict(), token: token, completion: completion)
     }
     
+    open func validateSample(sample: OMHDataPoint) -> Bool {
+        
+        let sampleDict = sample.toDict()
+        return JSONSerialization.isValidJSONObject(sampleDict)
+        
+    }
+    
     open func postSample(
         sampleDict: OMHDataPointDictionary,
         mediaAttachments: [OMHMediaAttachment]? = nil,
@@ -206,6 +213,11 @@ open class OMHClient: NSObject {
         let headers = ["Authorization": "Bearer \(token)", "Accept": "application/json"]
         let params = sampleDict
         
+        guard JSONSerialization.isValidJSONObject(sampleDict) else {
+            completion(false, OMHClientError.invalidDatapoint)
+            return
+        }
+        
         let request = Alamofire.request(
             urlString,
             method: .post,
@@ -226,6 +238,11 @@ open class OMHClient: NSObject {
         let urlString = "\(self.baseURL)/dataPoints"
         let headers = ["Authorization": "Bearer \(token)", "Accept": "application/json"]
         var sampleData: Data!
+        
+        guard JSONSerialization.isValidJSONObject(sampleDict) else {
+            completion(false, OMHClientError.invalidDatapoint)
+            return
+        }
         
         do {
             sampleData = try JSONSerialization.data(withJSONObject: sampleDict, options: JSONSerialization.WritingOptions(rawValue: 0))
