@@ -25,41 +25,35 @@ public enum OMHAcquisitionProvenanceModality: String {
 
 public class OMHAcquisitionProvenance {
     let sourceName: String
-    let sourceCreationDateTime: Date?
-    let modality: OMHAcquisitionProvenanceModality?
-    public init(sourceName: String, sourceCreationDateTime: Date?, modality: OMHAcquisitionProvenanceModality?) {
+    let sourceCreationDateTime: Date
+    let modality: OMHAcquisitionProvenanceModality
+    public init(sourceName: String, sourceCreationDateTime: Date, modality: OMHAcquisitionProvenanceModality) {
         self.sourceName = sourceName
         self.sourceCreationDateTime = sourceCreationDateTime
         self.modality = modality
     }
     
     public func toDict() -> [String: String]?  {
-        
-        var dict = ["source_name": sourceName]
-        if let creationDateTime = self.sourceCreationDateTime {
-            dict["source_creation_date_time"] = staticISO8601Formatter.string(from: creationDateTime)
-        }
-        if let modality = self.modality {
-            dict["modality"] = modality.rawValue
-        }
-        return dict
-        
+        return [
+            "source_name": self.sourceName,
+            "source_creation_date_time": staticISO8601Formatter.string(from: self.sourceCreationDateTime),
+            "modality": self.modality.rawValue
+        ]
     }
     
 }
 
 public protocol OMHDataPointBuilder: OMHDataPoint {
     var dataPointID: String { get }
-    var creationDateTime: Date { get }
     var schema: OMHSchema { get }
     
     //header
     var header: [String: Any] { get }
     
-    var acquisitionSourceName: String? { get }
-    var acquisitionSourceCreationDateTime: Date? { get }
-    var acquisitionModality: OMHAcquisitionProvenanceModality? { get }
-    var acquisitionProvenance: OMHAcquisitionProvenance? { get }
+    var acquisitionSourceName: String { get }
+    var acquisitionSourceCreationDateTime: Date { get }
+    var acquisitionModality: OMHAcquisitionProvenanceModality { get }
+    var acquisitionProvenance: OMHAcquisitionProvenance { get }
     
     var body: [String: Any] { get }
 }
@@ -82,41 +76,18 @@ public extension OMHDataPointBuilder {
     }
     
     open var header: [String: Any] {
-        
-        var dict: [String: Any] = [
+        return [
             "id": self.dataPointID,
-            "creation_date_time": self.stringFromDate(self.creationDateTime),
-            "schema_id": self.schemaDict
+            "schema_id": self.schemaDict,
+            "acquisition_provenance": self.acquisitionProvenance.toDict(),
         ]
-        
-        if let acquisitionProvenanceDict = self.acquisitionProvenanceDict {
-            dict["acquisition_provenance"] = acquisitionProvenanceDict
-        }
-        return dict
     }
     
-    open var acquisitionProvenanceDict: [String: String]? {
-        if let sourceName = self.acquisitionSourceName {
-            var dict = ["source_name": sourceName]
-            if let creationDateTime = self.acquisitionSourceCreationDateTime {
-                dict["source_creation_date_time"] = self.stringFromDate(creationDateTime)
-            }
-            if let modality = self.acquisitionModality {
-                dict["modality"] = modality.rawValue
-            }
-            return dict
-        }
-        else { return nil }
-        
-    }
-    
-    open var acquisitionProvenance: OMHAcquisitionProvenance? {
-        if let sourceName = self.acquisitionSourceName {
-            return OMHAcquisitionProvenance(
-                sourceName: sourceName, sourceCreationDateTime:
-                self.acquisitionSourceCreationDateTime,
-                modality: self.acquisitionModality)
-        }
-        else { return nil }
+    open var acquisitionProvenance: OMHAcquisitionProvenance {
+        return OMHAcquisitionProvenance(
+            sourceName: self.acquisitionSourceName,
+            sourceCreationDateTime: self.acquisitionSourceCreationDateTime,
+            modality: self.acquisitionModality
+        )
     }
 }
