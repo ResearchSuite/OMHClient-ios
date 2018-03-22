@@ -55,6 +55,8 @@ public protocol OMHDataPointBuilder: OMHDataPoint {
     var acquisitionModality: OMHAcquisitionProvenanceModality { get }
     var acquisitionProvenance: OMHAcquisitionProvenance { get }
     
+    var metadata: [String: Any]? { get }
+    
     var body: [String: Any] { get }
 }
 
@@ -76,11 +78,18 @@ public extension OMHDataPointBuilder {
     }
     
     open var header: [String: Any] {
-        return [
+        
+        var header: [String: Any] = [
             "id": self.dataPointID,
             "schema_id": self.schemaDict,
             "acquisition_provenance": self.acquisitionProvenance.toDict(),
-        ]
+            ]
+        
+        if let metadata = self.metadata {
+            header["metadata"] = metadata
+        }
+        
+        return header
     }
     
     open var acquisitionProvenance: OMHAcquisitionProvenance {
@@ -89,5 +98,9 @@ public extension OMHDataPointBuilder {
             sourceCreationDateTime: self.acquisitionSourceCreationDateTime,
             modality: self.acquisitionModality
         )
+    }
+    
+    open var metadata: [String: Any]? {
+        return nil
     }
 }

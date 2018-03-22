@@ -21,6 +21,8 @@ open class OMHDataPointBase: NSObject, OMHDataPointBuilder {
     open var body: [String: Any] {
         fatalError("Not Implemented")
     }
+    
+    open var metadata: [String : Any]?
 
     public required override init() {
         
